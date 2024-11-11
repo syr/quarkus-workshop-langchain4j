@@ -5,7 +5,7 @@ A workshop to learn how to build AI-Infused applications with Quarkus and LangCh
 
 The workshop is divided into several steps. You can follow the instructions
 available in the [workshop
-website](https://quarkus.io/quarkus-langchain4j-workshop/). Alternatively,
+website](https://quarkus.io/quarkus-workshop-langchain4j/). Alternatively,
 you may serve the instructions locally by following the [docs/README
 file](docs/README.md).
 
