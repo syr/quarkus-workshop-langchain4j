@@ -798,7 +798,7 @@ You will see 2 properties (if you don’t see them, go ahead and add them):</p>
 <p>The <code>log-requests</code> property enables logging of all requests made to the model,
 while the <code>log-responses</code> property enables logging of all responses received from the model.
 These logs provide valuable insights into how the LLM is interacting with your application and any issues that arise.
-Go ahead and start up Quarkus Dev Mode if you haven’t already with <code>./mvnw quarkus:dev</code> go to http://localhost:8080
+Go ahead and start up Quarkus Dev Mode if you haven’t already with <code>./mvnw quarkus:dev</code> go to <a href="http://localhost:8080/" target="_blank">http://localhost:8080</a>
 and open the chat interface in the bottom right of your screen. Send an instruction to the bot and then come
 back to your console. You’ll see a series requests/responses to/from the LLM with a bunch of information such as
 the url, headers, and in the body, the model you called, the messages, temperature, tokens and more.</p>
@@ -1010,7 +1010,7 @@ In our case however, we’re going to use a Quarkus Dev Service to capture and v
 <p>In production, your organization will likely already have tools set up to collect observability data,
 however Quarkus offers a few ways to visualize and search the collected data on your local machine.</p>
 <h4 id="quarkus-dev-ui">Quarkus Dev UI<a class="headerlink" href="#quarkus-dev-ui" title="Permanent link"></a></h4>
-<p>Let’s start with the Quarkus Dev UI. Go ahead and open it at http://localhost:8080/q/dev-ui.
+<p>Let’s start with the Quarkus Dev UI. Go ahead and open it at <a href="http://localhost:8080/q/dev-ui" target="_blank">http://localhost:8080/q/dev-ui</a>.
 If you’ve added the micrometer and micrometer-registry-prometheus extensions, you will see a “Micrometer metrics” card
 in the extensions menu.</p>
 <p><img alt="Micrometer card in Quarkus Dev UI" src="../images/micrometer-card.png"></p>
@@ -1038,7 +1038,7 @@ automatically (or may we say ‘automagically’?) start up in their respective 
 Note that it could take a bit longer for the application to start up, since Quarkus is starting up the LGTM Dev Services containers
 in the background.</p>
 <p>After you’ve generated some data, let’s go and explore this data in Grafana. The Dev Service exposes a random port.
-The easiest way to find it is to go to the Quarkus Dev UI (http://localhost:8080/q/dev-ui) and click on the “Dev Services” menu item.</p>
+The easiest way to find it is to go to the Quarkus Dev UI (<a href="http://localhost:8080/q/dev-ui" target="_blank">http://localhost:8080/q/dev-ui</a>) and click on the “Dev Services” menu item.</p>
 <p><img alt="Quarkus Dev Services" src="../images/dev-services-observability.png"></p>
 <p>Find the <code>grafana.endpoint</code> and open the url in another browser tab. Use admin/admin to log in if you need to.</p>
 <p>Let’s first explore the provided custom metrics dashboards that the dev service creates. Go to “Dashboards” in the left menu.
@@ -1047,7 +1047,7 @@ registry extensions? They’re both reflected here. Feel free to explore the das
 If you don’t see much data data in the graphs, you may want to select a shorter time span in the top right of your screen and/or
 create some more chat requests.</p>
 <p><img alt="Grafana Dashboard" src="../images/grafana-dashboard.png"></p>
-<p>You can also find an aggregation of all metrics (including the langchain4j relevant ones) by going to Explore &gt; Metrics:</p>
+<p>You can also find an aggregation of all metrics (including the LangChain4j relevant ones) by going to Explore &gt; Metrics:</p>
 <p><img alt="Prometheus Metrics graphs" src="../images/prometheus-metrics.png"></p>
 <p>Now let’s explore the Query functionality to find specific data. Click on the <code>Explore</code> menu item.
 An interactive query window will open up.
@@ -1058,7 +1058,7 @@ based on what typical calls to ChatGPT cost.</p>
 <p><img alt="Estimated Cost Graph" src="../images/genai-estimated-cost.png"></p>
 <p>Let’s now take a look at how we can get our traces from Tempo. In the same Query window next the “Outline”,
 select <code>Tempo</code> instead of Prometheus. Then, click on <code>Search</code> next to Query type. You will see a table appear
-below with a list of the latest trace IDs and the service they relate to. </p>
+below with a list of the latest trace IDs and the service they relate to.</p>
 <p><img alt="Tempo search" src="../images/tempo-search.png"></p>
 <p>Click on any one of the traces to open more details about them. You will see a list of spans that represent different
 parts of the request and response, and potentially also the database query, based on which trace you have selected.
@@ -1076,7 +1076,7 @@ the user would still be affected and potentially get an ugly error message.</p>
 <p>In this next section, we’re going to add Fault Tolerance to our application’s LLM calls so that,
 should something go wrong, we are able to handle it gracefully.</p>
 <p>Ultimately, calling an LLM is not much different than making traditional REST calls.
-If you’re familiar with Microprofile (https://microprofile.io), you may know that it has a specification
+If you’re familiar with <a href="https://microprofile.io" target="_blank">MicroProfile</a>, you may know that it has a specification
 for how to implement Fault Tolerance. Quarkus implements this feature with the <code>quarkus-smallrye-fault-tolerance</code>
 extension. Go ahead and add it to the your pom.xml:</p>
 <div class="highlight"><span class="filename">pom.xml</span><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="w">        </span><span class="cm">&lt;!-- Fault Tolerance --&gt;</span>
@@ -1099,11 +1099,11 @@ following annotations:</p>
 <a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jakarta.enterprise.context.SessionScoped</span><span class="p">;</span>
 <a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
 <a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.ExecutionContext</span><span class="p">;</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.Fallback</span><span class="p">;</span>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.FallbackHandler</span><span class="p">;</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="hll"><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.Fallback</span><span class="p">;</span>
+</span><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.FallbackHandler</span><span class="p">;</span>
 <a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="hll"><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.Retry</span><span class="p">;</span>
-</span><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.Timeout</span><span class="p">;</span>
-<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>
+</span><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="hll"><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.Timeout</span><span class="p">;</span>
+</span><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>
 <a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dev.langchain4j.service.SystemMessage</span><span class="p">;</span>
 <a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="kn">import</span><span class="w"> </span><span class="nn">io.quarkiverse.langchain4j.RegisterAiService</span><span class="p">;</span>
 <a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="kn">import</span><span class="w"> </span><span class="nn">io.quarkiverse.langchain4j.ToolBox</span><span class="p">;</span>
@@ -1143,11 +1143,11 @@ following annotations:</p>
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
 <a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jakarta.enterprise.context.SessionScoped</span><span class="p">;</span>
 <a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.ExecutionContext</span><span class="p">;</span>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.Fallback</span><span class="p">;</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.FallbackHandler</span><span class="p">;</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="hll"><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.Retry</span><span class="p">;</span>
-</span><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.Timeout</span><span class="p">;</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="hll"><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.ExecutionContext</span><span class="p">;</span>
+</span><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.Fallback</span><span class="p">;</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="hll"><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.FallbackHandler</span><span class="p">;</span>
+</span><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.Retry</span><span class="p">;</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.Timeout</span><span class="p">;</span>
 <a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
 <a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dev.langchain4j.service.SystemMessage</span><span class="p">;</span>
 <a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="kn">import</span><span class="w"> </span><span class="nn">io.quarkiverse.langchain4j.RegisterAiService</span><span class="p">;</span>
@@ -1194,7 +1194,7 @@ you could set the inference server url to something that won’t resolve, eg:</p
 <p>In this step, we introduced observability to retrieve useful information about the application’s state, performance
 and behavior. This is a vital piece for a production-grade application, regardless of whether it’s using AI or not.
 We also learned that Quarkus LangChain4j provides relatively straightforward ways to not only add observability
-to the application, but also to consult the data produces by it. </p>
+to the application, but also to consult the data produces by it.</p>
 <p>We also introduced chaos engineering techniques to simulate failures in our application and observe how our 
 fallback mechanism responds. This is a crucial step for ensuring that our application can handle unexpected situations gracefully.</p></div>
 
