@@ -154,6 +154,7 @@
                     <groupId>com.github.tjake</groupId>
                     <artifactId>jlama-native</artifactId>
                     <version>${jlama.version}</version>
+                    <!-- set the following classifier to your system's architecture -->
                     <classifier>linux-x86_64</classifier>
                 </dependency>
             </dependencies>
