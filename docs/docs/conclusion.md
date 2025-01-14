@@ -10,7 +10,9 @@ Throughout the process, we explored key concepts, including:
 - Implementing the Retrieval Augmented Generation (RAG) pattern to enrich responses with external data
 - Leveraging function calling to create _agents_—LLMs that can reason and interact with various system components
 - Implementing guardrails to safeguard against common risks, such as prompt injection and LLM misbehavior
+- Adding observability and fault tolerance
+- Adding an embedded LLM into our Java application
 
 By the end of this tutorial, you should now have a solid foundation for building AI-enhanced applications with Quarkus, using its powerful tools to create smarter, more responsive systems. 
-If you have any questions or feedback, don’t hesitate to reach out to us on [Zulip](https://quarkusio.zulipchat.com/). 
+If you have any questions or feedback, don’t hesitate to reach out to us on [Zulip](https://quarkusio.zulipchat.com/).
 We're excited to see what you build next!
