@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>dev.langchain4j</groupId>
+    <artifactId>quarkus-langchain4j-workshop-10</artifactId>
+    <version>1.0.0</version>
+
+    <properties>
+        <maven.compiler.release>21</maven.compiler.release>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <compiler-plugin.version>3.13.0</compiler-plugin.version>
+
+        <quarkus.platform.version>3.17.6</quarkus.platform.version>
+        <quarkus-langchain4j.version>0.23.3</quarkus-langchain4j.version>
+        <langchain4j.version>0.36.2</langchain4j.version>
+        <jlama.version>0.8.4</jlama.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.quarkus.platform</groupId>
+                <artifactId>quarkus-bom</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-embeddings-bge-small-en-q</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-websockets-next</artifactId>
+        </dependency>
+
+        <!-- UI -->
+        <dependency>
+            <groupId>org.mvnpm</groupId>
+            <artifactId>importmap</artifactId>
+            <version>1.0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mvnpm.at.mvnpm</groupId>
+            <artifactId>vaadin-webcomponents</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mvnpm</groupId>
+            <artifactId>es-module-shims</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mvnpm</groupId>
+            <artifactId>wc-chatbot</artifactId>
+            <version>0.2.0</version>
+            <scope>runtime</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${compiler-plugin.version}</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>io.quarkus.platform</groupId>
+                <artifactId>quarkus-maven-plugin</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>generate-code</goal>
+                            <goal>generate-code-tests</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>--enable-preview --enable-native-access=ALL-UNNAMED</jvmArgs>
+                    <modules>
+                        <module>jdk.incubator.vector</module>
+                    </modules>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>openai</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>openai</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>io.quarkiverse.langchain4j</groupId>
+                    <artifactId>quarkus-langchain4j-openai</artifactId>
+                    <version>${quarkus-langchain4j.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>jlama</id>
+            <activation>
+                <property>
+                    <name>jlama</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>io.quarkiverse.langchain4j</groupId>
+                    <artifactId>quarkus-langchain4j-jlama</artifactId>
+                    <version>${quarkus-langchain4j.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.github.tjake</groupId>
+                    <artifactId>jlama-core</artifactId>
+                    <version>${jlama.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.github.tjake</groupId>
+                    <artifactId>jlama-native</artifactId>
+                    <version>${jlama.version}</version>
+                    <classifier>linux-x86_64</classifier>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+</project>
