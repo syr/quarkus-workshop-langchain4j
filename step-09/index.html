@@ -540,15 +540,6 @@ You are not viewing the latest version.
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#quarkus-dev-ui" class="md-nav__link">
-    <span class="md-ellipsis">
-      Quarkus Dev UI
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#quarkus-otel-lgtm-dev-service" class="md-nav__link">
     <span class="md-ellipsis">
       Quarkus Otel LGTM Dev Service
@@ -705,15 +696,6 @@ You are not viewing the latest version.
   
     <nav class="md-nav" aria-label="Tools to visualize your collected observability data on your local machine">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#quarkus-dev-ui" class="md-nav__link">
-    <span class="md-ellipsis">
-      Quarkus Dev UI
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#quarkus-otel-lgtm-dev-service" class="md-nav__link">
@@ -933,24 +915,15 @@ we can create meaningful graphs, dashboards and alerts.</p>
 <p>The (currently) preferred way to gather metrics in Quarkus is to use the micrometer project.
 You can add metrics collection with micrometer by adding the <code>quarkus-micrometer</code> extension to the pom.xml.
 You then need to add a collector specific extension to format the metrics accordingly. In the below example
-we have included extensions for Prometheus and general purpose OpenTelemetry.</p>
-<div class="highlight"><span class="filename">pom.xml</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="w">        </span><span class="nt">&lt;dependency&gt;</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">            </span><span class="nt">&lt;groupId&gt;</span>io.quarkus<span class="nt">&lt;/groupId&gt;</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">            </span><span class="nt">&lt;artifactId&gt;</span>quarkus-micrometer<span class="nt">&lt;/artifactId&gt;</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="nt">&lt;/dependency&gt;</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">        </span><span class="cm">&lt;!-- Automatically format metrics for Prometheus --&gt;</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">        </span><span class="nt">&lt;dependency&gt;</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">            </span><span class="nt">&lt;groupId&gt;</span>io.quarkus<span class="nt">&lt;/groupId&gt;</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">            </span><span class="nt">&lt;artifactId&gt;</span>quarkus-micrometer-registry-prometheus<span class="nt">&lt;/artifactId&gt;</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">        </span><span class="nt">&lt;/dependency&gt;</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span><span class="cm">&lt;!-- Export metrics for OpenTelemetry compatible collectors --&gt;</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">        </span><span class="nt">&lt;dependency&gt;</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">            </span><span class="nt">&lt;groupId&gt;</span>io.quarkiverse.micrometer.registry<span class="nt">&lt;/groupId&gt;</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">            </span><span class="nt">&lt;artifactId&gt;</span>quarkus-micrometer-registry-otlp<span class="nt">&lt;/artifactId&gt;</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">            </span><span class="nt">&lt;version&gt;</span>3.2.4<span class="nt">&lt;/version&gt;</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">        </span><span class="nt">&lt;/dependency&gt;</span>
+we have included the <code>quarkus-micrometer-registry-otlp</code> extension for the general purpose OpenTelemetry. This extension imports the quarkus-micrometer as well, so no need to specify it implicitly. Add the following dependency to your code:</p>
+<div class="highlight"><span class="filename">pom.xml</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="w">        </span><span class="cm">&lt;!-- Export metrics for OpenTelemetry compatible collectors --&gt;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">        </span><span class="nt">&lt;dependency&gt;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">            </span><span class="nt">&lt;groupId&gt;</span>io.quarkiverse.micrometer.registry<span class="nt">&lt;/groupId&gt;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">            </span><span class="nt">&lt;artifactId&gt;</span>quarkus-micrometer-registry-otlp<span class="nt">&lt;/artifactId&gt;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">            </span><span class="nt">&lt;version&gt;</span>3.2.4<span class="nt">&lt;/version&gt;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">        </span><span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div>
-<p>By Quarkus default will collect a variety of useful metrics for you by default,
+<p>By default Quarkus will collect a variety of useful metrics for you by default,
 eg., CPU &amp; memory usage, garbage collection stats, etc. The LangChain4j extension will add useful metrics
 about the LLM interactions as well. Such as eg.:</p>
 <div class="highlight"><span class="filename">Example of some of the LangChain4j metrics</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># HELP langchain4j_aiservices_seconds_max </span>
@@ -1009,15 +982,8 @@ In our case however, we’re going to use a Quarkus Dev Service to capture and v
 <h3 id="tools-to-visualize-your-collected-observability-data-on-your-local-machine">Tools to visualize your collected observability data on your local machine<a class="headerlink" href="#tools-to-visualize-your-collected-observability-data-on-your-local-machine" title="Permanent link"></a></h3>
 <p>In production, your organization will likely already have tools set up to collect observability data,
 however Quarkus offers a few ways to visualize and search the collected data on your local machine.</p>
-<h4 id="quarkus-dev-ui">Quarkus Dev UI<a class="headerlink" href="#quarkus-dev-ui" title="Permanent link"></a></h4>
-<p>Let’s start with the Quarkus Dev UI. Go ahead and open it at <a href="http://localhost:8080/q/dev-ui" target="_blank">http://localhost:8080/q/dev-ui</a>.
-If you’ve added the micrometer and micrometer-registry-prometheus extensions, you will see a “Micrometer metrics” card
-in the extensions menu.</p>
-<p><img alt="Micrometer card in Quarkus Dev UI" src="../images/micrometer-card.png"></p>
-<p>Go ahead and click on the Prometheus (raw output), and search for “langchain4j”. Notice all the metrics collected by
-the LangChain4j extension. Feel free to play around with the application and refresh the metrics to see how they’re affected.</p>
 <h4 id="quarkus-otel-lgtm-dev-service">Quarkus Otel LGTM Dev Service<a class="headerlink" href="#quarkus-otel-lgtm-dev-service" title="Permanent link"></a></h4>
-<p>Quarkus also provides an experimental new Dev Service to help visualize all your OpenTelemetry observability data in a central place.
+<p>Quarkus provides an experimental new Dev Service to help visualize all your OpenTelemetry observability data in a central place.
 It is based on the open source LGTM stack, which stands for Loki (log aggregation), Grafana (graph tool), Tempo (traces aggregation)
 and Prometheus (metrics aggregation). By adding the <code>quarkus-observability-devservices-gtm</code> extension, this set of tools will
 automatically (or may we say ‘automagically’?) start up in their respective containers and wire up to your application’s observability endpoints.</p>
@@ -1076,8 +1042,7 @@ the user would still be affected and potentially get an ugly error message.</p>
 <p>In this next section, we’re going to add Fault Tolerance to our application’s LLM calls so that,
 should something go wrong, we are able to handle it gracefully.</p>
 <p>Ultimately, calling an LLM is not much different than making traditional REST calls.
-If you’re familiar with <a href="https://microprofile.io" target="_blank">MicroProfile</a>, you may know that it has a specification
-for how to implement Fault Tolerance. Quarkus implements this feature with the <code>quarkus-smallrye-fault-tolerance</code>
+If you’re familiar with <a href="https://microprofile.io" target="_blank">MicroProfile</a>, you may know that it has a specification for how to implement Fault Tolerance. Quarkus implements this feature with the <code>quarkus-smallrye-fault-tolerance</code>
 extension. Go ahead and add it to the your pom.xml:</p>
 <div class="highlight"><span class="filename">pom.xml</span><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="w">        </span><span class="cm">&lt;!-- Fault Tolerance --&gt;</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">        </span><span class="nt">&lt;dependency&gt;</span>
