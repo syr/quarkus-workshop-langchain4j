@@ -924,8 +924,8 @@ we have included the <code>quarkus-micrometer-registry-otlp</code> extension for
 <a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">        </span><span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div>
 <p>By default Quarkus will collect a variety of useful metrics for you by default,
-eg., CPU &amp; memory usage, garbage collection stats, etc. The LangChain4j extension will add useful metrics
-about the LLM interactions as well. Such as eg.:</p>
+e.g., CPU &amp; memory usage, garbage collection stats, etc. The LangChain4j extension will add useful metrics
+about the LLM interactions as well. Such as:</p>
 <div class="highlight"><span class="filename">Example of some of the LangChain4j metrics</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># HELP langchain4j_aiservices_seconds_max </span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1"># TYPE langchain4j_aiservices_seconds_max gauge</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>langchain4j_aiservices_seconds_max<span class="o">{</span><span class="nv">aiservice</span><span class="o">=</span><span class="s2">"CustomerSupportAgent"</span>,method<span class="o">=</span><span class="s2">"chat"</span>,<span class="o">}</span><span class="w"> </span><span class="m">0</span>.0
@@ -967,7 +967,7 @@ extensions to your pom.xml file. You can optionally also add the opentelemetry-j
 <p>By adding these extensions to your applications, Quarkus does a lot of heavy lifting for you in terms of setting up
 and configuring the OpenTelemetry API, including sending traces to a tracing service. Quarkus LangChain4j automatically
 integrates with the OpenTelemetry extension to collect traces regarding your interactions with LLMs as well.</p>
-<p>You can configure the opentelemetry tracing functionality by eg. setting
+<p>You can configure the opentelemetry tracing functionality by e.g. setting
 the endpoint and headers for your tracing service, as well as the format of the traces:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># quarkus.otel.exporter.otlp.traces.endpoint=http://localhost:4317</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="na">quarkus.otel.exporter.otlp.traces.headers</span><span class="o">=</span><span class="s">authorization=Bearer my_secret </span>
@@ -1059,7 +1059,7 @@ and what delay there should be in between the calls</li>
 </ul>
 <p>Now all we have to do is annotate our <code>dev.langchain4j.quarkus.workshop.CustomerSupportAgent</code> AI service with the
 following annotations:</p>
-<div class="highlight"><span class="filename">CustomerSupportAgentWebSocket.java</span><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">package</span><span class="w"> </span><span class="nn">dev.langchain4j.quarkus.workshop</span><span class="p">;</span>
+<div class="highlight"><span class="filename">CustomerSupportAgent.java</span><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">package</span><span class="w"> </span><span class="nn">dev.langchain4j.quarkus.workshop</span><span class="p">;</span>
 <a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
 <a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jakarta.enterprise.context.SessionScoped</span><span class="p">;</span>
 <a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
@@ -1103,55 +1103,10 @@ following annotations:</p>
 <a id="__codelineno-9-42" name="__codelineno-9-42" href="#__codelineno-9-42"></a><span class="w">    </span><span class="p">}</span>
 <a id="__codelineno-9-43" name="__codelineno-9-43" href="#__codelineno-9-43"></a><span class="p">}</span>
 </code></pre></div>
-<p>We also need to add the fallback method to the file:
-</p><div class="highlight"><span class="filename">CustomerSupportAgentWebSocket.java</span><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">package</span><span class="w"> </span><span class="nn">dev.langchain4j.quarkus.workshop</span><span class="p">;</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jakarta.enterprise.context.SessionScoped</span><span class="p">;</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="hll"><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.ExecutionContext</span><span class="p">;</span>
-</span><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.Fallback</span><span class="p">;</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="hll"><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.FallbackHandler</span><span class="p">;</span>
-</span><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.Retry</span><span class="p">;</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="kn">import</span><span class="w"> </span><span class="nn">org.eclipse.microprofile.faulttolerance.Timeout</span><span class="p">;</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dev.langchain4j.service.SystemMessage</span><span class="p">;</span>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="kn">import</span><span class="w"> </span><span class="nn">io.quarkiverse.langchain4j.RegisterAiService</span><span class="p">;</span>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="kn">import</span><span class="w"> </span><span class="nn">io.quarkiverse.langchain4j.ToolBox</span><span class="p">;</span>
-<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="kn">import</span><span class="w"> </span><span class="nn">io.quarkiverse.langchain4j.guardrails.InputGuardrails</span><span class="p">;</span>
-<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>
-<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="nd">@SessionScoped</span>
-<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="nd">@RegisterAiService</span>
-<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">CustomerSupportAgent</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>
-<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="w">    </span><span class="nd">@SystemMessage</span><span class="p">(</span><span class="s">"""</span>
-<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="s">            You are a customer support agent of a car rental company 'Miles of Smiles'.</span>
-<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="s">            You are friendly, polite and concise.</span>
-<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="s">            If the question is unrelated to car rental, you should politely redirect the customer to the right department.</span>
-<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a>
-<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="s">            Today is {current_date}.</span>
-<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="s">            """</span><span class="p">)</span>
-<a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="w">    </span><span class="nd">@InputGuardrails</span><span class="p">(</span><span class="n">PromptInjectionGuard</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
-<a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="w">    </span><span class="nd">@ToolBox</span><span class="p">(</span><span class="n">BookingRepository</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
-<a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="w">    </span><span class="nd">@Timeout</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
-<a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a><span class="w">    </span><span class="nd">@Retry</span><span class="p">(</span><span class="n">maxRetries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">delay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span>
-<a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="w">    </span><span class="nd">@Fallback</span><span class="p">(</span><span class="n">CustomerSupportAgentFallback</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
-<a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="nf">chat</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">userMessage</span><span class="p">);</span>
-<a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a>
-<a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a><span class="hll"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CustomerSupportAgentFallback</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">FallbackHandler</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
-</span><a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a><span class="hll">
-</span><a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a><span class="hll"><span class="w">        </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">EMPTY_RESPONSE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Failed to get a response from the AI Model. Are you sure it's up and running, and configured correctly?"</span><span class="p">;</span>
-</span><a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a><span class="hll"><span class="w">        </span><span class="nd">@Override</span>
-</span><a id="__codelineno-10-38" name="__codelineno-10-38" href="#__codelineno-10-38"></a><span class="hll"><span class="w">        </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span><span class="n">ExecutionContext</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a><span class="hll"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">EMPTY_RESPONSE</span><span class="p">;</span>
-</span><a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a><span class="hll"><span class="w">        </span><span class="p">}</span>
-</span><a id="__codelineno-10-41" name="__codelineno-10-41" href="#__codelineno-10-41"></a><span class="hll">
-</span><a id="__codelineno-10-42" name="__codelineno-10-42" href="#__codelineno-10-42"></a><span class="hll"><span class="w">    </span><span class="p">}</span>
-</span><a id="__codelineno-10-43" name="__codelineno-10-43" href="#__codelineno-10-43"></a><span class="p">}</span>
-</code></pre></div>
 <p>That’s all. To test the implemented fault tolerance, we’ll need to ‘break’ our application.
-You can either turn off your wifi, set the @Timeout value to something very low (eg. 10), or
+You can either turn off your wifi, set the @Timeout value to something very low (e.g. 10), or
 you could set the inference server url to something that won’t resolve, eg:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="na">quarkus.langchain4j.openai.base-url</span><span class="o">=</span><span class="s">https://api.nonsenseurl.com/v1/</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="na">quarkus.langchain4j.openai.base-url</span><span class="o">=</span><span class="s">https://api.nonsenseurl.com/v1/</span>
 </code></pre></div>
 <p>It’s up to you to decide what your preferred way to create chaos is :).  Once you’ve done that, run your application and test it with different inputs. You should see that the fallback method is called when the LLM fails to produce a response within the specified timeout. This demonstrates the fault tolerance of our application.</p>
 <p><img alt="Fallback is being called when an error occurs" src="../images/fallback.png"></p>
