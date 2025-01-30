@@ -17,7 +17,7 @@
         <compiler-plugin.version>3.13.0</compiler-plugin.version>
 
         <quarkus.platform.version>3.18.1</quarkus.platform.version>
-        <quarkus-langchain4j.version>0.23.3</quarkus-langchain4j.version>
+        <quarkus-langchain4j.version>0.24.0.CR1</quarkus-langchain4j.version>
         <jlama.version>0.8.4</jlama.version>
     </properties>
 
@@ -45,6 +45,24 @@
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-embeddings-bge-small-en-q</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-embeddings-bge-small-en-q</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.langchain4j</groupId>
+            <artifactId>quarkus-langchain4j-pgvector</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-orm-panache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-postgresql</artifactId>
         </dependency>
 
         <dependency>
@@ -78,6 +96,32 @@
             <artifactId>wc-chatbot</artifactId>
             <version>0.2.0</version>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- Observability -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-opentelemetry</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.opentelemetry.instrumentation</groupId>
+            <artifactId>opentelemetry-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-observability-devservices-lgtm</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.micrometer.registry</groupId>
+            <artifactId>quarkus-micrometer-registry-otlp</artifactId>
+            <version>3.2.4</version>
+        </dependency>
+
+        <!-- Fault Tolerance -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-fault-tolerance</artifactId>
         </dependency>
 
     </dependencies>
@@ -165,7 +209,6 @@
                     <groupId>com.github.tjake</groupId>
                     <artifactId>jlama-native</artifactId>
                     <version>${jlama.version}</version>
-                    <!-- set the following classifier to your system's architecture -->
                     <classifier>${os.detected.classifier}</classifier>
                 </dependency>
             </dependencies>

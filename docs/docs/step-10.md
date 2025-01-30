@@ -97,41 +97,7 @@ quarkus.langchain4j.jlama.log-responses=true
 
 Here we configured a relatively small model taken from the Huggingface repository of the Jlama main maintainer, but you can choose any other model. When the application is compiled for the first time the model is automatically downloaded locally by Jlama from Huggingface.
 
-## Compiling and running the project
-
-This time it is not advised to launch the Quarkus application in dev mode as we have done so far. This is because at the moment the dev mode disables the Java Hotspot C2 compilation, making Jlama extremely slow. 
-
-Since we won't launch our application in dev mode anymore, we won't also be able to leverage the dev services normally available in that scenario, so we will simplify a bit the application to remove the need of those services, in particular getting rid of all the database connection used to store the customers and their bookings and for the embedding required by RAG. However we could keep using the RAG capabilities we developed by simply replacing the pgvector-based embedding store with the in-memory version provided out-of-the-box by LangChain4j. To do so we have to remove the `quarkus-langchain4j-pgvector` dependency and programmatically inject the `InMemoryEmbeddingStore` in the CDI context by adding the following class.
-
-```java
-package dev.langchain4j.quarkus.workshop;
-
-import dev.langchain4j.store.embedding.EmbeddingStore;
-import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Produces;
-
-public class RagInMemoryStoreCreator {
-
-    @Produces
-    @ApplicationScoped
-    public EmbeddingStore create() {
-        return new InMemoryEmbeddingStore();
-    }
-}
-```
-
-Finally we are now ready to compile and package the project using the `jlama` profile
-
-```shell
-./mvnw clean package -Pjlama
-```
-
-and to launch the jar containing the web application using again all the flag necessary to enable the Vector API.
-
-```shell
-java -jar --enable-preview --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector target/quarkus-app/quarkus-run.jar
-```
+## Running the LLM inference locally
 
 Now we can go back again to our chatbot and test the RAG pattern as we did in the step 05, but this time running the LLM inference engine directly embedded in our Java application and without using any external services. Open the browser at [http://localhost:8080](http://localhost:8080){target="_blank"} and ask a question related to the cancellation policy.
 
