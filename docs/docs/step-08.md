@@ -4,8 +4,7 @@ In the previous step we introduced function calling, enabling the LLM to interac
 While this feature provides a powerful mechanism to extend the chatbot's capabilities, it also introduces new risks,
 such as [prompt injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/){target="_blank"}.
 
-In this step we will explore how to mitigate prompt injection using guardrails.
-Guardrails are a set of functions executed before and after the LLM's response to ensure the safety and reliability of
+In this step we will explore how to mitigate prompt injection using [input guardrails](https://docs.quarkiverse.io/quarkus-langchain4j/dev/guardrails.html#_input_guardrails), that are a set of functions executed before and after the LLM's response to ensure the safety and reliability of
 the interaction.
 
 ![Guardrails](images/guardrails.png)

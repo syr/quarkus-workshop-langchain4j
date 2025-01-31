@@ -97,41 +97,30 @@ quarkus.langchain4j.jlama.log-responses=true
 
 Here we configured a relatively small model taken from the Huggingface repository of the Jlama main maintainer, but you can choose any other model. When the application is compiled for the first time the model is automatically downloaded locally by Jlama from Huggingface.
 
-## Compiling and running the project
+## Sanitizing hallucinated LLM responses
 
-This time it is not advised to launch the Quarkus application in dev mode as we have done so far. This is because at the moment the dev mode disables the Java Hotspot C2 compilation, making Jlama extremely slow. 
+The fact that with Jlama we are using a much smaller model increases the possibility of obtaining a hallucinated response. In particular the `PromptInjectionDetectionService` is supposed to return only a numeric value representing the likelihood of a prompt
+injection attack, but often small models do not take in any consideration the prompt in the user message of that service saying
 
-Since we won't launch our application in dev mode anymore, we won't also be able to leverage the dev services normally available in that scenario, so we will simplify a bit the application to remove the need of those services, in particular getting rid of all the database connection used to store the customers and their bookings and for the embedding required by RAG. However we could keep using the RAG capabilities we developed by simply replacing the pgvector-based embedding store with the in-memory version provided out-of-the-box by LangChain4j. To do so we have to remove the `quarkus-langchain4j-pgvector` dependency and programmatically inject the `InMemoryEmbeddingStore` in the CDI context by adding the following class.
-
-```java
-package dev.langchain4j.quarkus.workshop;
-
-import dev.langchain4j.store.embedding.EmbeddingStore;
-import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Produces;
-
-public class RagInMemoryStoreCreator {
-
-    @Produces
-    @ApplicationScoped
-    public EmbeddingStore create() {
-        return new InMemoryEmbeddingStore();
-    }
-}
+```
+Do not return anything else. Do not even return a newline or a leading field. Only a single floating point number.
 ```
 
-Finally we are now ready to compile and package the project using the `jlama` profile
+and return together with that number a long explanation of how it calculated the score. This makes the `PromptInjectionDetectionService` to fail, not being able to convert that verbal explanation into a double.
 
-```shell
-./mvnw clean package -Pjlama
+The [output guardrails](https://docs.quarkiverse.io/quarkus-langchain4j/dev/guardrails.html#_output_guardrails) provided by the Quarkus-LangChain4j extension are functions invoked once the LLM has produced its output, allowing to rewrite, or even block, that output before passing it downstream. In our case we can try to sanitize the hallucinated LLM response and extract a single number from it by creating the `dev.langchain4j.quarkus.workshop.NumericOutputSanitizerGuard` class with the following content:==
+
+```java title="NumericOutputSanitizerGuard.java"
+--8<-- "../../step-10/src/main/java/dev/langchain4j/quarkus/workshop/NumericOutputSanitizerGuard.java"
 ```
 
-and to launch the jar containing the web application using again all the flag necessary to enable the Vector API.
+Then, exactly as we did in step 8 for the input guardrail, we can use the output guardrail that we just created in the `PromptInjectionDetectionService` by simply annotating its `isInjection` method with `@OutputGuardrails(NumericOutputSanitizerGuard.class)`.
 
-```shell
-java -jar --enable-preview --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector target/quarkus-app/quarkus-run.jar
+```java hl_lines="6 59" title="PromptInjectionDetectionService.java"
+--8<-- "../../step-10/src/main/java/dev/langchain4j/quarkus/workshop/PromptInjectionDetectionService.java"
 ```
+
+## Running the LLM inference locally
 
 Now we can go back again to our chatbot and test the RAG pattern as we did in the step 05, but this time running the LLM inference engine directly embedded in our Java application and without using any external services. Open the browser at [http://localhost:8080](http://localhost:8080){target="_blank"} and ask a question related to the cancellation policy.
 
