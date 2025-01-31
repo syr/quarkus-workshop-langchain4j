@@ -97,6 +97,29 @@ quarkus.langchain4j.jlama.log-responses=true
 
 Here we configured a relatively small model taken from the Huggingface repository of the Jlama main maintainer, but you can choose any other model. When the application is compiled for the first time the model is automatically downloaded locally by Jlama from Huggingface.
 
+## Sanitizing hallucinated LLM responses
+
+The fact that with Jlama we are using a much smaller model increases the possibility of obtaining a hallucinated response. In particular the `PromptInjectionDetectionService` is supposed to return only a numeric value representing the likelihood of a prompt
+injection attack, but often small models do not take in any consideration the prompt in the user message of that service saying
+
+```
+Do not return anything else. Do not even return a newline or a leading field. Only a single floating point number.
+```
+
+and return together with that number a long explanation of how it calculated the score. This makes the `PromptInjectionDetectionService` to fail, not being able to convert that verbal explanation into a double.
+
+The [output guardrails](https://docs.quarkiverse.io/quarkus-langchain4j/dev/guardrails.html#_output_guardrails) provided by the Quarkus-LangChain4j extension are functions invoked once the LLM has produced its output, allowing to rewrite, or even block, that output before passing it downstream. In our case we can try to sanitize the hallucinated LLM response and extract a single number from it by creating the `dev.langchain4j.quarkus.workshop.NumericOutputSanitizerGuard` class with the following content:==
+
+```java title="NumericOutputSanitizerGuard.java"
+--8<-- "../../step-10/src/main/java/dev/langchain4j/quarkus/workshop/NumericOutputSanitizerGuard.java"
+```
+
+Then, exactly as we did in step 8 for the input guardrail, we can use the output guardrail that we just created in the `PromptInjectionDetectionService` by simply annotating its `isInjection` method with `@OutputGuardrails(NumericOutputSanitizerGuard.class)`.
+
+```java hl_lines="6 59" title="PromptInjectionDetectionService.java"
+--8<-- "../../step-10/src/main/java/dev/langchain4j/quarkus/workshop/PromptInjectionDetectionService.java"
+```
+
 ## Running the LLM inference locally
 
 Now we can go back again to our chatbot and test the RAG pattern as we did in the step 05, but this time running the LLM inference engine directly embedded in our Java application and without using any external services. Open the browser at [http://localhost:8080](http://localhost:8080){target="_blank"} and ask a question related to the cancellation policy.
